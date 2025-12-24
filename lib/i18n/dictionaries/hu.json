@@ -1,0 +1,209 @@
+{
+  "common": {
+    "nav": {
+      "home": "Főoldal",
+      "about": "Rólunk",
+      "services": "Szolgáltatások",
+      "references": "Referenciák",
+      "blog": "Blog",
+      "ebook": "E-könyv",
+      "career": "Karrier",
+      "contact": "Kapcsolat"
+    },
+    "cta": {
+      "requestQuote": "Árajánlat kérés",
+      "learnMore": "Bővebben",
+      "readMore": "Tovább olvasom",
+      "submit": "Küldés",
+      "download": "Letöltés",
+      "sendMessage": "Üzenet küldése",
+      "subscribe": "Feliratkozás",
+      "viewAll": "Összes megtekintése"
+    },
+    "footer": {
+      "description": "Innoválunk, hogy biztonságban tartsuk a vállalkozásokat és magánszemélyeket.",
+      "services": "Szolgáltatások",
+      "usefulLinks": "Hasznos linkek",
+      "newsletter": "Hírlevél",
+      "newsletterText": "Iratkozzon fel az Emamut hírlevelére és kapja meg az összes újdonságot e-mailben.",
+      "copyright": "© 2025 Emamut - Minden jog fenntartva",
+      "terms": "Általános szerződési feltételek",
+      "privacy": "Adatvédelmi szabályzat",
+      "cookies": "Cookie szabályzat"
+    },
+    "contact": {
+      "phone": "Ügyfélszolgálat",
+      "email": "Információ és árajánlat",
+      "address": "Cím"
+    }
+  },
+  "home": {
+    "hero": {
+      "badge": "Megbízható biztonság 2010 óta",
+      "title": "Védjük, ami fontos az Ön számára",
+      "subtitle": "Teljes körű biztonsági rendszerek otthonok és vállalkozások számára. Videómegfigyelés, riasztók, beléptető rendszerek és még sok más.",
+      "cta1": "Ingyenes árajánlat",
+      "cta2": "Szolgáltatások"
+    },
+    "services": {
+      "title": "Szolgáltatásaink",
+      "subtitle": "Teljes körű biztonsági megoldások minden igényre",
+      "surveillance": {
+        "title": "Videómegfigyelő rendszerek",
+        "description": "HD kamerák, rögzítés és távoli megfigyelés az Ön biztonságáért."
+      },
+      "alarm": {
+        "title": "Riasztórendszerek",
+        "description": "Riasztó központok, érzékelők és betöréses riasztások."
+      },
+      "access": {
+        "title": "Beléptető rendszer",
+        "description": "Kártyák, biometria és munkaidő nyilvántartás a belépés kezeléséhez."
+      },
+      "intercom": {
+        "title": "Kaputelefonok",
+        "description": "Audio és videó rendszerek a látogatók azonosítására."
+      },
+      "network": {
+        "title": "Adathálózatok",
+        "description": "Strukturált kábelezés, Wi-Fi és hang/TV hálózatok."
+      },
+      "fire": {
+        "title": "Tűzjelző rendszerek",
+        "description": "Tanúsított tűzérzékelő és riasztó rendszerek."
+      }
+    },
+    "trust": {
+      "title": "Ne bízza a biztonságát bárkire",
+      "description": "A biztonság az üzleti működés egyik legfontosabb szempontja. Ebből kiindulva az Emamut teljes körű biztonsági megoldásokat kínál, amelyek több sebezhető területet is lefednek.",
+      "cta": "Árajánlat kérése",
+      "stats": {
+        "years": "Év tapasztalat",
+        "clients": "Elégedett ügyfél",
+        "projects": "Befejezett projekt"
+      }
+    },
+    "whyUs": {
+      "title": "Miért válasszon minket?",
+      "support": {
+        "title": "Műszaki támogatás",
+        "description": "Karbantartást biztosítunk a garanciális időszak alatt és után is."
+      },
+      "quality": {
+        "title": "Minőségi szolgáltatások",
+        "description": "Prémium minőségű szolgáltatásokat nyújtunk, a legújabb termékekkel és technológiákkal dolgozunk."
+      },
+      "consulting": {
+        "title": "Tanácsadás",
+        "description": "Teljes körű megoldások, beleértve a tanácsadást, megvalósítást és támogatást."
+      }
+    },
+    "faq": {
+      "title": "Gyakran ismételt kérdések",
+      "q1": {
+        "question": "Bárki telepíthet biztonsági rendszert?",
+        "answer": "Nem. Biztonsági rendszereket csak szakosodott cégek telepíthetnek, a Román Rendőrség Főfelügyelősége által kiadott engedély alapján, a Román Hírszerző Szolgálat előzetes jóváhagyásával."
+      },
+      "q2": {
+        "question": "Riasztórendszer vagy videómegfigyelő rendszer?",
+        "answer": "Mindkét rendszernek megvannak az előnyei és hátrányai. A videómegfigyelés rögzíti az eseményeket, míg a riasztórendszer figyelmeztet és riaszt jogosulatlan behatolás esetén. A két rendszer kiegészíti egymást."
+      },
+      "q3": {
+        "question": "Szükségem van rendőrségi jóváhagyásra a telepített rendszerekhez?",
+        "answer": "Igen. Megkapja a telepítési projektet, használati utasításokat, rendszergaranciát, számlát és telepítői kódot."
+      },
+      "q4": {
+        "question": "Fontos a biztonsági rendszerek karbantartása?",
+        "answer": "Igen. A rendszer védelmének teljes kihasználásához ajánlott, sőt néha kötelező a képzett személyzet általi karbantartás és rendszeres ellenőrzés."
+      }
+    },
+    "blog": {
+      "title": "Legújabb cikkek",
+      "subtitle": "Ismerje meg a biztonsági terület legújabb híreit"
+    },
+    "quote": {
+      "title": "Kérjen árajánlatot!",
+      "form": {
+        "type": "Magánszemély vagy cég?",
+        "personal": "Magánszemély",
+        "business": "Cég",
+        "service": "Szolgáltatás típusa",
+        "size": "Rendszer mérete",
+        "sizeSm": "Kicsi (1-3 zóna)",
+        "sizeMd": "Közepes (4-9 zóna)",
+        "sizeLg": "Nagy (9-15 zóna)",
+        "sizeOther": "Egyéb",
+        "name": "Teljes név",
+        "email": "E-mail cím",
+        "phone": "Telefonszám",
+        "county": "Megye",
+        "city": "Település",
+        "message": "Üzenet",
+        "submit": "Kérés küldése"
+      }
+    }
+  },
+  "about": {
+    "title": "Rólunk",
+    "subtitle": "Biztonsági szakértők 15 éve",
+    "description": "Az Emamut egy 2010-ben alapított magánvállalkozás. Fő tevékenységünk biztonsági rendszerek telepítése és karbantartása.",
+    "experience": "15 év tapasztalat",
+    "clients": "500+ ügyfél",
+    "differentiators": {
+      "speed": {
+        "title": "Gyorsaság",
+        "description": "Gyorsan és hatékonyan reagálunk ügyfeleink kérdéseire és igényeire."
+      },
+      "reliability": {
+        "title": "Megbízhatóság",
+        "description": "Biztosítjuk a biztonsági rendszerek megbízható működését."
+      },
+      "communication": {
+        "title": "Hatékony kommunikáció",
+        "description": "Átláthatóan és hatékonyan kommunikálunk az ügyfelek igényeinek megértése érdekében."
+      },
+      "flexibility": {
+        "title": "Rugalmasság",
+        "description": "Gyorsan és hatékonyan reagálunk az egyedi igényekre."
+      }
+    }
+  },
+  "contact": {
+    "title": "Kapcsolat",
+    "subtitle": "Itt vagyunk Önnek",
+    "phone": {
+      "title": "Telefonos támogatás",
+      "value": "+40 735 777 296"
+    },
+    "email": {
+      "title": "E-mail",
+      "value": "contact@emamut.ro"
+    },
+    "address": {
+      "title": "Iroda",
+      "value": "Str. Horea nr. 26, Salonta, Bihar megye"
+    },
+    "form": {
+      "title": "Kapcsolatfelvételi űrlap",
+      "name": "Teljes név",
+      "email": "E-mail cím",
+      "phone": "Telefonszám",
+      "message": "Üzenete",
+      "submit": "Üzenet küldése",
+      "success": "Üzenet sikeresen elküldve!",
+      "error": "Hiba történt. Kérjük, próbálja újra."
+    }
+  },
+  "services": {
+    "title": "Szolgáltatások",
+    "subtitle": "A technológia szövetségesünk az Ön biztonságáért",
+    "description": "Kollégáink professzionalizmusa lehetővé teszi számunkra a magas komplexitású tervezési és kivitelezési munkák megközelítését.",
+    "cta": "Részletek",
+    "whyUs": {
+      "title": "Miért válasszon minket?",
+      "item1": "A berendezések telepítését szakosodott csapatok végzik.",
+      "item2": "Gyors telepítés és versenyképes árak.",
+      "item3": "Garancia, karbantartás és szerviz minden elvégzett munkára."
+    }
+  }
+}

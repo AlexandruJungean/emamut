@@ -151,7 +151,14 @@ web-emamut/
 │   │   ├── hero-2.webp
 │   │   ├── hero-3.webp
 │   │   ├── Ebook.webp
-│   │   └── media/                   # Reference images (11 files)
+│   │   ├── team.png                 # AI-generated team photo
+│   │   ├── modern-office.png        # AI-generated office
+│   │   ├── technical-workshop.png   # AI-generated workshop
+│   │   ├── residential-installation.png  # Reference: home installation
+│   │   ├── commercial-building.png  # Reference: commercial project
+│   │   ├── retail-store.png         # Reference: retail project
+│   │   ├── warehouse.png            # Reference: warehouse project
+│   │   └── media/                   # Additional reference images (11 files)
 │   ├── icons/
 │   │   ├── services/                # Service icons
 │   │   └── flags/                   # Country flags (RO, HU, GB)
@@ -651,6 +658,9 @@ SUPABASE_SERVICE_ROLE_KEY=
 - [x] Cookie Policy (Romanian)
 - [x] Privacy Policy (Romanian)
 - [x] Terms & Conditions (Romanian)
+- [x] Team photo (AI-generated)
+- [x] Office/workspace photos (AI-generated)
+- [x] Project reference photos (AI-generated, 4 images)
 
 ### 🤖 AI Will Handle
 - [x] Hungarian translations (all content)
@@ -661,10 +671,16 @@ SUPABASE_SERVICE_ROLE_KEY=
 - [ ] Resend API Key (for email sending)
 - [ ] Supabase setup (for blog/career admin)
 
-### 📸 Optional (Can Enhance Later)
-- [ ] High-res team photo
-- [ ] Office/workspace photos
-- [ ] Additional project photos for References page
+### 📸 AI-Generated Images ✅ READY
+- [x] Team photo (`team.png`)
+- [x] Modern office (`modern-office.png`)
+- [x] Technical workshop (`technical-workshop.png`)
+- [x] Residential installation (`residential-installation.png`)
+- [x] Commercial building (`commercial-building.png`)
+- [x] Retail store (`retail-store.png`)
+- [x] Warehouse (`warehouse.png`)
+
+> ⚠️ **Note:** Convert PNG files to WebP for better performance before launch.
 
 ---
 

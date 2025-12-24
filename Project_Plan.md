@@ -139,7 +139,6 @@ Each with:
 - Termeni și condiții
 - Politica de confidențialitate
 - Politica cookies
-- Autorizații (licenses display)
 
 ---
 

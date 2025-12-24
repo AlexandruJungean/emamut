@@ -12,12 +12,12 @@
 | Framer Motion | Latest | Animations |
 
 ### Backend/Services (To be integrated)
-| Service | Purpose |
-|---------|---------|
-| Supabase | Database, Auth, Storage |
-| Resend / SendGrid | Email sending |
-| Google Maps API | Map embed on contact page |
-| reCAPTCHA v3 | Form spam protection |
+| Service | Purpose | Status |
+|---------|---------|--------|
+| Supabase | Database, Auth, Storage | ⏳ Phase 2 |
+| Resend | Email sending | ⏳ After approval |
+| Google Maps API | Map embed on contact page | ✅ Ready |
+| reCAPTCHA Enterprise | Form spam protection | ✅ Ready |
 
 ---
 
@@ -26,7 +26,7 @@
 ```
 web-emamut/
 ├── app/
-│   ├── [locale]/                    # Language wrapper
+│   ├── [locale]/                    # Language wrapper (ro, hu, en)
 │   │   ├── page.tsx                 # Home
 │   │   ├── despre-noi/
 │   │   │   └── page.tsx
@@ -54,8 +54,7 @@ web-emamut/
 │   │   │   └── page.tsx
 │   │   ├── termeni-conditii/
 │   │   ├── politica-confidentialitate/
-│   │   ├── politica-cookies/
-│   │   └── autorizatii/
+│   │   └── politica-cookies/
 │   ├── api/
 │   │   ├── contact/
 │   │   │   └── route.ts             # Contact form handler
@@ -111,6 +110,12 @@ web-emamut/
 │       ├── ScrollReveal.tsx
 │       ├── WhatsAppButton.tsx
 │       └── ImageLightbox.tsx
+├── content/
+│   └── legal/
+│       └── ro/
+│           ├── politica-cookies.md
+│           ├── politica-confidentialitate.md
+│           └── termeni-conditii.md
 ├── lib/
 │   ├── i18n/
 │   │   ├── config.ts                # i18n configuration
@@ -125,12 +130,15 @@ web-emamut/
 │   │   └── types.ts
 │   ├── email/
 │   │   └── send.ts
+│   ├── recaptcha/
+│   │   └── verify.ts                # reCAPTCHA Enterprise verification
 │   └── utils/
 │       ├── cn.ts                    # Class name utility
 │       └── formatDate.ts
 ├── hooks/
 │   ├── useScrollAnimation.ts
 │   ├── useLanguage.ts
+│   ├── useRecaptcha.ts              # reCAPTCHA Enterprise hook
 │   └── useForm.ts
 ├── types/
 │   ├── blog.ts
@@ -143,10 +151,10 @@ web-emamut/
 │   │   ├── hero-2.webp
 │   │   ├── hero-3.webp
 │   │   ├── Ebook.webp
-│   │   └── media/                   # Reference images
+│   │   └── media/                   # Reference images (11 files)
 │   ├── icons/
 │   │   ├── services/                # Service icons
-│   │   └── flags/                   # Country flags
+│   │   └── flags/                   # Country flags (RO, HU, GB)
 │   ├── logo.webp
 │   └── screenshots/                 # Reference screenshots
 ├── styles/
@@ -254,6 +262,13 @@ export default config
 
 ## 🌍 Internationalization (i18n)
 
+### Languages
+| Language | Code | Flag | Status |
+|----------|------|------|--------|
+| Română | `ro` | 🇷🇴 | Default, primary |
+| Magyar | `hu` | 🇭🇺 | AI translated |
+| English | `en` | 🇬🇧 | AI translated |
+
 ### Middleware Configuration
 
 ```typescript
@@ -336,50 +351,117 @@ export const config = {
 
 ---
 
+## 🔐 reCAPTCHA Enterprise Configuration
+
+### Client-side Hook
+
+```typescript
+// hooks/useRecaptcha.ts
+'use client'
+
+declare global {
+  interface Window {
+    grecaptcha: {
+      enterprise: {
+        ready: (callback: () => void) => void
+        execute: (siteKey: string, options: { action: string }) => Promise<string>
+      }
+    }
+  }
+}
+
+export async function getRecaptchaToken(action: string): Promise<string> {
+  return new Promise((resolve) => {
+    window.grecaptcha.enterprise.ready(async () => {
+      const token = await window.grecaptcha.enterprise.execute(
+        process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!,
+        { action }
+      )
+      resolve(token)
+    })
+  })
+}
+```
+
+### Server-side Verification
+
+```typescript
+// lib/recaptcha/verify.ts
+export async function verifyRecaptcha(token: string, expectedAction: string): Promise<boolean> {
+  const response = await fetch(
+    `https://recaptchaenterprise.googleapis.com/v1/projects/${process.env.RECAPTCHA_PROJECT_ID}/assessments?key=${process.env.RECAPTCHA_API_KEY}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        event: {
+          token,
+          expectedAction,
+          siteKey: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY,
+        },
+      }),
+    }
+  )
+
+  const assessment = await response.json()
+  
+  // Check if valid (score 0.0 to 1.0, higher = more likely human)
+  return assessment.tokenProperties?.valid && assessment.riskAnalysis?.score >= 0.5
+}
+```
+
+---
+
 ## 📧 Email Configuration
 
-### API Route Example
+### API Route Example (with reCAPTCHA Enterprise)
 
 ```typescript
 // app/api/contact/route.ts
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
+import { verifyRecaptcha } from '@/lib/recaptcha/verify'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+// Initialize Resend (will be undefined until API key is provided)
+const resend = process.env.RESEND_API_KEY 
+  ? new Resend(process.env.RESEND_API_KEY)
+  : null
 
 export async function POST(request: Request) {
   const body = await request.json()
   const { name, email, phone, message, recaptchaToken } = body
 
-  // Verify reCAPTCHA
-  const recaptchaResponse = await fetch(
-    `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${recaptchaToken}`,
-    { method: 'POST' }
-  )
-  const recaptchaData = await recaptchaResponse.json()
-
-  if (!recaptchaData.success || recaptchaData.score < 0.5) {
+  // Verify reCAPTCHA Enterprise
+  const isHuman = await verifyRecaptcha(recaptchaToken, 'CONTACT_FORM')
+  
+  if (!isHuman) {
     return NextResponse.json({ error: 'reCAPTCHA verification failed' }, { status: 400 })
   }
 
-  // Send email
+  // Send email (or mock if Resend not configured)
   try {
-    await resend.emails.send({
-      from: 'Emamut Website <noreply@emamut.ro>',
-      to: 'contact@emamut.ro',
-      subject: `Mesaj nou de la ${name}`,
-      html: `
-        <h2>Mesaj nou de pe website</h2>
-        <p><strong>Nume:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Telefon:</strong> ${phone}</p>
-        <p><strong>Mesaj:</strong></p>
-        <p>${message}</p>
-      `,
-    })
+    if (resend) {
+      await resend.emails.send({
+        from: 'Emamut Website <noreply@emamut.ro>',
+        to: 'contact@emamut.ro',
+        subject: `Mesaj nou de la ${name}`,
+        html: `
+          <h2>Mesaj nou de pe website</h2>
+          <p><strong>Nume:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Telefon:</strong> ${phone}</p>
+          <p><strong>Mesaj:</strong></p>
+          <p>${message}</p>
+        `,
+      })
+    } else {
+      // Mock email sending for development
+      console.log('📧 Email would be sent:', { name, email, phone, message })
+    }
 
     return NextResponse.json({ success: true })
   } catch (error) {
+    console.error('Email error:', error)
     return NextResponse.json({ error: 'Failed to send email' }, { status: 500 })
   }
 }
@@ -485,7 +567,7 @@ npm install next-intl
 # Forms
 npm install react-hook-form @hookform/resolvers zod
 
-# Email
+# Email (Phase 2 - after business approval)
 npm install resend
 
 # Supabase (Phase 2)
@@ -499,102 +581,103 @@ npm install @tiptap/react @tiptap/starter-kit
 
 # Image optimization
 npm install sharp
-
-# reCAPTCHA
-npm install react-google-recaptcha-v3
 ```
 
 ---
 
 ## 🔑 Environment Variables
 
-Create `.env.local` file:
+### `.env.local` (Current Status)
 
 ```env
-# App
+# ═══════════════════════════════════════════════════════════════
+# APP CONFIGURATION
+# ═══════════════════════════════════════════════════════════════
 NEXT_PUBLIC_SITE_URL=https://emamut.ro
 NEXT_PUBLIC_SITE_NAME=Emamut Security Solutions
 
-# Google Maps
-NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+# ═══════════════════════════════════════════════════════════════
+# GOOGLE MAPS ✅ CONFIGURED
+# ═══════════════════════════════════════════════════════════════
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_key_here
 
-# reCAPTCHA
+# ═══════════════════════════════════════════════════════════════
+# RECAPTCHA ENTERPRISE ✅ CONFIGURED
+# ═══════════════════════════════════════════════════════════════
 NEXT_PUBLIC_RECAPTCHA_SITE_KEY=your_recaptcha_site_key
-RECAPTCHA_SECRET_KEY=your_recaptcha_secret_key
+RECAPTCHA_API_KEY=your_google_cloud_api_key
+RECAPTCHA_PROJECT_ID=your_project_id
 
-# Email (Resend)
-RESEND_API_KEY=your_resend_api_key
+# ═══════════════════════════════════════════════════════════════
+# EMAIL (RESEND) ⏳ PENDING - After business approval
+# ═══════════════════════════════════════════════════════════════
+RESEND_API_KEY=
 
-# Supabase (Phase 2)
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+# ═══════════════════════════════════════════════════════════════
+# SUPABASE ⏳ PHASE 2
+# ═══════════════════════════════════════════════════════════════
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
 ```
 
 ---
 
-## 📋 What You Need to Provide
+## 📞 Contact Information
 
-### ✅ Already Have
+| Item | Value | Status |
+|------|-------|--------|
+| Phone | +40 735 777 296 | ✅ Confirmed |
+| WhatsApp | +40 735 777 296 | ✅ Confirmed |
+| Email | contact@emamut.ro | ✅ Confirmed |
+| Address | Str. Horea nr. 26, Salonta, jud. Bihor | ✅ Confirmed |
+| Facebook | https://www.facebook.com/EmamutSRL | ✅ Confirmed |
+
+---
+
+## 📋 Project Status
+
+### ✅ Ready & Available
 - [x] Logo (`logo.webp`)
 - [x] Hero images (`hero-1.webp`, `hero-2.webp`, `hero-3.webp`)
 - [x] Ebook cover image (`Ebook.webp`)
 - [x] Media/reference images (11 images in `/media`)
-- [x] Contact information
+- [x] Contact information (phone, email, address)
+- [x] WhatsApp number confirmed
 - [x] Service descriptions (all 6)
 - [x] Facebook link
+- [x] Google Maps API Key
+- [x] reCAPTCHA Enterprise (Site Key + API Key + Project ID)
+- [x] Cookie Policy (Romanian)
+- [x] Privacy Policy (Romanian)
+- [x] Terms & Conditions (Romanian)
 
-### ❌ Need from You
+### 🤖 AI Will Handle
+- [x] Hungarian translations (all content)
+- [x] English translations (all content)
+- [x] UI/UX copywriting
 
-#### 1. **API Keys & Credentials**
-| Item | Purpose | Where to Get |
-|------|---------|--------------|
-| Google Maps API Key | Contact page map | [Google Cloud Console](https://console.cloud.google.com) |
-| reCAPTCHA v3 Keys | Form spam protection | [Google reCAPTCHA](https://www.google.com/recaptcha/admin) |
-| Resend API Key | Email sending | [Resend.com](https://resend.com) or alternative |
-| Domain DNS access | Email verification | Your domain registrar |
+### ⏳ Pending (After Business Approval)
+- [ ] Resend API Key (for email sending)
+- [ ] Supabase setup (for blog/career admin)
 
-#### 2. **Content**
-| Item | Purpose | Notes |
-|------|---------|-------|
-| Hungarian translations | Multi-language | All page content |
-| English translations | Multi-language | All page content |
-| Testimonials (3-5) | Home page carousel | Name, role, company, review text, photo (optional) |
-| FAQ answers | Home page FAQ | Already have questions, need full answers |
-| Reference projects | Portfolio page | Photos, descriptions, client names (if permitted) |
-| Blog content | Initial blog posts | If you want posts at launch |
-| Career job details | Career pages | Full job descriptions for both positions |
-| Terms & Conditions | Legal page | Full legal text |
-| Privacy Policy | Legal page | Full legal text, GDPR compliant |
-| Cookie Policy | Legal page | Full legal text |
-| Licenses/Authorizations | Legal page | License numbers, images |
-
-#### 3. **Images (Optional but Recommended)**
-| Item | Purpose | Recommended Size |
-|------|---------|------------------|
-| High-res team photo | About & Career pages | 1920x1080px |
-| Office/workspace photos | About page | 1200x800px |
-| Project photos | References page | 800x600px each |
-| Service-specific images | Service pages | 1200x800px each |
-
-#### 4. **Decisions Needed**
-- [ ] Confirm WhatsApp number for chat button: +40 735 777 296
-- [ ] Preferred email service (Resend, SendGrid, or SMTP?)
-- [ ] Admin access - should admin panel be at `/admin` or separate?
-- [ ] Do you want cookie consent banner?
-- [ ] Do you want blog comments feature?
+### 📸 Optional (Can Enhance Later)
+- [ ] High-res team photo
+- [ ] Office/workspace photos
+- [ ] Additional project photos for References page
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Development Status: READY TO BUILD!
 
-Once you provide the API keys, I can start building! The first phase will include:
+All required assets and API keys are available. Development can begin immediately.
 
-1. Setting up the project structure
-2. Creating the design system & UI components
-3. Implementing multi-language support
-4. Building the Header & Footer
-5. Creating the Home page
+### Phase 1 (Starting Now):
+1. ✅ Project setup complete
+2. 🔨 Design system & UI components
+3. 🔨 Multi-language setup (RO/HU/EN)
+4. 🔨 Header with language switcher
+5. 🔨 Footer
+6. 🔨 Home page
 
-Let me know when you're ready! 🦣
-
+Let's go! 🦣⚡

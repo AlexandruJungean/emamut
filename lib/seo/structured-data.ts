@@ -28,8 +28,8 @@ export function getOrganizationSchema() {
     },
     geo: {
       '@type': 'GeoCoordinates',
-      latitude: 46.7975,
-      longitude: 21.6558,
+      latitude: 46.8007805,
+      longitude: 21.6651048,
     },
     contactPoint: [
       {
@@ -67,8 +67,8 @@ export function getLocalBusinessSchema() {
     },
     geo: {
       '@type': 'GeoCoordinates',
-      latitude: 46.7975,
-      longitude: 21.6558,
+      latitude: 46.8007805,
+      longitude: 21.6651048,
     },
     openingHoursSpecification: [
       {

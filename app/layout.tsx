@@ -147,11 +147,11 @@ export default function RootLayout({
       >
         {children}
         
-        {/* reCAPTCHA Enterprise Script */}
-        <Script
+        {/* reCAPTCHA Enterprise Script - Uncomment when site key is properly configured */}
+        {/* <Script
           src={`https://www.google.com/recaptcha/enterprise.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}`}
           strategy="lazyOnload"
-        />
+        /> */}
       </body>
     </html>
   )

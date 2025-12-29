@@ -534,6 +534,15 @@ a {
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   Hide reCAPTCHA Badge (allowed if mentioned in privacy policy)
+   ═══════════════════════════════════════════════════════════════ */
+.grecaptcha-badge {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
    Responsive Utilities
    ═══════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
